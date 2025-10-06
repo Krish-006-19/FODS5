@@ -13,19 +13,15 @@ struct Node {
     }
 };
 
-Node *createNode(int val) {
-    return new Node(val);
-}
-
 Node *insertNode(Node *&root, int val) {
-    Node *node = createNode(val);
-    if (root == nullptr) {
+    Node *node = new Node(val);
+    if (!root) {
         root = node;
         return root;
     }
     Node *curr = root;
     Node *parent = nullptr;
-    while (curr != nullptr) {
+    while (curr) {
         parent = curr;
         if (val < curr->value)
             curr = curr->left;
@@ -40,7 +36,7 @@ Node *insertNode(Node *&root, int val) {
 }
 
 void Update(Node *root, int oldValue, int newValue) {
-    if (root == nullptr)
+    if (!root)
         return;
     queue<Node *> q;
     q.push(root);
@@ -59,21 +55,21 @@ void Update(Node *root, int oldValue, int newValue) {
 }
 
 Node *deleteNode(Node *&root, int value) {
-    if (root == nullptr)
+    if (!root)
         return root;
     Node *parent = nullptr;
     Node *curr = root;
-    while (curr != nullptr && curr->value != value) {
+    while (curr && curr->value != value) {
         parent = curr;
         if (value < curr->value)
             curr = curr->left;
         else
             curr = curr->right;
     }
-    if (curr == nullptr)
+    if (!curr)
         return root;
 
-    if (curr->left == nullptr && curr->right == nullptr) {
+    if (!curr->left && !curr->right) {
         if (curr != root) {
             if (parent->left == curr)
                 parent->left = nullptr;
@@ -83,7 +79,7 @@ Node *deleteNode(Node *&root, int value) {
             root = nullptr;
         delete curr;
     }
-    else if (curr->left == nullptr || curr->right == nullptr) {
+    else if (!curr->left || !curr->right) {
         Node *child = (curr->left) ? curr->left : curr->right;
         if (curr != root) {
             if (curr == parent->left)
@@ -97,7 +93,7 @@ Node *deleteNode(Node *&root, int value) {
     else {
         Node *succParent = curr;
         Node *succ = curr->right;
-        while (succ->left != nullptr) {
+        while (succ->left) {
             succParent = succ;
             succ = succ->left;
         }
@@ -130,8 +126,8 @@ void Preorder(Node *root) {
 void Inorder(Node *root) {
     stack<Node *> st;
     Node *current = root;
-    while (current != nullptr || !st.empty()) {
-        while (current != nullptr) {
+    while (current || !st.empty()) {
+        while (current) {
             st.push(current);
             current = current->left;
         }
