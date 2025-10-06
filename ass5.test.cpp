@@ -62,16 +62,17 @@ void Preorder(Node *root) {
 void Inorder(Node* root) {
     stack<Node*> st;
     Node* current = root;
-
-    while (current || !st.empty()) {
-        while (current) {
+    while(true){
+        if(current){
             st.push(current);
             current = current->left;
+        } else {
+            if(st.empty()) break;
+            current = st.top();
+            st.pop();
+            cout << current->value << " ";
+            current = current->right;
         }
-        current = st.top();
-        st.pop();
-        cout << current->value << " ";
-        current = current->right;
     }
 }
 
