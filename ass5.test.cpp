@@ -13,7 +13,6 @@ struct Node {
     }
 };
 
-// Insert in Binary Tree (level-order insertion)
 Node* insertNode(Node* &root, int val) {
     Node* node = new Node(val);
     if (!root) {
@@ -46,7 +45,6 @@ Node* insertNode(Node* &root, int val) {
     return root;
 }
 
-// Preorder traversal
 void Preorder(Node *root) {
     if (!root) return;
     stack<Node*> st;
@@ -61,7 +59,6 @@ void Preorder(Node *root) {
     }
 }
 
-// Inorder traversal
 void Inorder(Node* root) {
     stack<Node*> st;
     Node* current = root;
@@ -78,7 +75,6 @@ void Inorder(Node* root) {
     }
 }
 
-// Postorder traversal
 void Postorder(Node* root) {
     if (!root) return;
     stack<Node*> st1, st2;
@@ -99,7 +95,6 @@ void Postorder(Node* root) {
     }
 }
 
-// Level-order (BFS) traversal
 void LevelOrder(Node* root) {
     if (!root) return;
 
