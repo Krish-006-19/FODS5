@@ -13,50 +13,59 @@ struct Node {
     }
 };
 
-Node *insertNode(Node *&root, int val) {
-    Node *node = new Node(val);
-    bool isFirst = false; 
+// Insert in Binary Tree (level-order insertion)
+Node* insertNode(Node* &root, int val) {
+    Node* node = new Node(val);
     if (!root) {
         root = node;
-        isFirst = true;
+        return root;
     }
-    if(!isFirst) {
-    Node *curr = root;
-    Node *parent = nullptr;
-    while (curr) {
-        parent = curr;
-        if (val < curr->value)
-            curr = curr->left;
-        else
-            curr = curr->right;
+
+    queue<Node*> q;
+    q.push(root);
+
+    while (!q.empty()) {
+        Node* curr = q.front();
+        q.pop();
+
+        if (!curr->left) {
+            curr->left = node;
+            return root;
+        } else {
+            q.push(curr->left);
+        }
+
+        if (!curr->right) {
+            curr->right = node;
+            return root;
+        } else {
+            q.push(curr->right);
+        }
     }
-    if (val < parent->value)
-        parent->left = node;
-    else
-        parent->right = node;
-    }
+
     return root;
 }
 
+// Preorder traversal
 void Preorder(Node *root) {
-    if (!root)
-        return;
-    stack<Node *> st;
+    if (!root) return;
+    stack<Node*> st;
     st.push(root);
+
     while (!st.empty()) {
-        Node *current = st.top();
+        Node* current = st.top();
         st.pop();
         cout << current->value << " ";
-        if (current->right)
-            st.push(current->right);
-        if (current->left)
-            st.push(current->left);
+        if (current->right) st.push(current->right);
+        if (current->left) st.push(current->left);
     }
 }
 
-void Inorder(Node *root) {
-    stack<Node *> st;
-    Node *current = root;
+// Inorder traversal
+void Inorder(Node* root) {
+    stack<Node*> st;
+    Node* current = root;
+
     while (current || !st.empty()) {
         while (current) {
             st.push(current);
@@ -69,28 +78,46 @@ void Inorder(Node *root) {
     }
 }
 
-void Postorder(Node *root) {
-    if (!root)
-        return;
-    stack<Node *> st1, st2;
+// Postorder traversal
+void Postorder(Node* root) {
+    if (!root) return;
+    stack<Node*> st1, st2;
     st1.push(root);
+
     while (!st1.empty()) {
-        Node *current = st1.top();
+        Node* current = st1.top();
         st1.pop();
         st2.push(current);
-        if (current->left)
-            st1.push(current->left);
-        if (current->right)
-            st1.push(current->right);
+
+        if (current->left) st1.push(current->left);
+        if (current->right) st1.push(current->right);
     }
+
     while (!st2.empty()) {
         cout << st2.top()->value << " ";
         st2.pop();
     }
 }
 
+// Level-order (BFS) traversal
+void LevelOrder(Node* root) {
+    if (!root) return;
+
+    queue<Node*> q;
+    q.push(root);
+
+    while (!q.empty()) {
+        Node* current = q.front();
+        q.pop();
+        cout << current->value << " ";
+
+        if (current->left) q.push(current->left);
+        if (current->right) q.push(current->right);
+    }
+}
+
 int main() {
-    Node *root = nullptr;
+    Node* root = nullptr;
     insertNode(root, 50);
     insertNode(root, 30);
     insertNode(root, 70);
@@ -107,6 +134,9 @@ int main() {
 
     cout << "\nPostorder: ";
     Postorder(root);
+
+    cout << "\nLevel-order (BFS): ";
+    LevelOrder(root);
 
     return 0;
 }
