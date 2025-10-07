@@ -64,55 +64,25 @@ void Update(Node *root, int oldValue, int newValue) {
     }
 }
 
-Node *deleteNode(Node *&root, int value) {
-    if (!root)
-        return root;
-    Node *parent = nullptr;
-    Node *curr = root;
-    while (curr && curr->value != value) {
-        parent = curr;
-        if (value < curr->value)
-            curr = curr->left;
-        else
-            curr = curr->right;
-    }
-    if (!curr)
-        return root;
-
-    if (!curr->left && !curr->right) {
-        if (curr != root) {
-            if (parent->left == curr)
-                parent->left = nullptr;
-            else
-                parent->right = nullptr;
-        } else
-            root = nullptr;
-        delete curr;
-    }
-    else if (!curr->left || !curr->right) {
-        Node *child = (curr->left) ? curr->left : curr->right;
-        if (curr != root) {
-            if (curr == parent->left)
-                parent->left = child;
-            else
-                parent->right = child;
-        } else
-            root = child;
-        delete curr;
-    }
+Node* deleteNode(Node* root, int val) {
+    if (!root) return nullptr;
+    if (val < root->value) root->left = deleteNode(root->left, val);
+    else if (val > root->value) root->right = deleteNode(root->right, val);
     else {
-        Node *succParent = curr;
-        Node *succ = curr->right;
-        while (succ->left) {
-            succParent = succ;
-            succ = succ->left;
+        if (!root->left) {
+            Node* r = root->right;
+            delete root;
+            return r;
         }
-        curr->value = succ->value;
-        if (succParent->left == succ)
-            succParent->left = succ->right;
-        else
-            succParent->right = succ->right;
-        delete succ;
+        if (!root->right) {
+            Node* l = root->left;
+            delete root;
+            return l;
+        }
+        Node* succ = root->right;
+        while (succ->left) succ = succ->left;
+        root->value = succ->value;
+        root->right = deleteNode(root->right, succ->value);
     }
     return root;
 }
