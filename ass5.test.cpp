@@ -66,26 +66,53 @@ void Update(Node *root, int oldValue, int newValue) {
 
 Node* deleteNode(Node* root, int val) {
     if (!root) return nullptr;
-    if (val < root->value) root->left = deleteNode(root->left, val);
-    else if (val > root->value) root->right = deleteNode(root->right, val);
-    else {
-        if (!root->left) {
-            Node* r = root->right;
-            delete root;
-            return r;
+
+    queue<Node*> q;
+    q.push(root);
+    Node *target = nullptr;
+    Node *last = nullptr;
+
+    while (!q.empty()) {
+        Node *current = q.front();
+        q.pop();
+
+        if (current->value == val) {
+            target = current;
         }
-        if (!root->right) {
-            Node* l = root->left;
-            delete root;
-            return l;
-        }
-        Node* succ = root->right;
-        while (succ->left) succ = succ->left;
-        root->value = succ->value;
-        root->right = deleteNode(root->right, succ->value);
+
+        if (current->left) q.push(current->left);
+        if (current->right) q.push(current->right);
+        
+        last = current;
     }
+
+    if (!target) return root; 
+
+    target->value = last->value;
+
+    queue<Node*> tempQueue;
+    tempQueue.push(root);
+    while (!tempQueue.empty()) {
+        Node* current = tempQueue.front();
+        tempQueue.pop();
+
+        if (current->left == last) {
+            current->left = nullptr;
+            break;
+        }
+        if (current->right == last) {
+            current->right = nullptr;
+            break;
+        }
+
+        if (current->left) tempQueue.push(current->left);
+        if (current->right) tempQueue.push(current->right);
+    }
+
+    delete last;
     return root;
 }
+
 
 void Preorder(Node *root) {
     if (!root)
