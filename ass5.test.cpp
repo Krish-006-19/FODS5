@@ -148,7 +148,7 @@ Node* deleteNode(Node* root, int val) {
         last = current;
     }
 
-    if (target && last) {
+    if (target) {
         target->value = last->value;
 
         if (parentOfLast) {
@@ -157,7 +157,7 @@ Node* deleteNode(Node* root, int val) {
             else if (parentOfLast->right == last)
                 parentOfLast->right = nullptr;
         } else {
-            root = nullptr; // only one node in tree
+            root = nullptr; 
         }
 
         delete last;
