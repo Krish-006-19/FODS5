@@ -1,66 +1,77 @@
 #include <iostream>
 using namespace std;
 
-class Queue {
-    static const int SIZE = 100;
-    void* arr[SIZE];
-    int front, rear;
-public:
-    Queue() : front(0), rear(0) {}
-    bool empty() { return front == rear; }
-    void push(void* x) {
-        if (rear == SIZE) {
-            cout << "Queue Overflow\n";
-            return;
-        }
-        arr[rear++] = x;
-    }
-    void* pop() {
-        if (empty()) {
-            cout << "Queue Underflow\n";
-            return nullptr;
-        }
-        return arr[front++];
-    }
-    void* frontElement() {
-        if (empty()) return nullptr;
-        return arr[front];
-    }
-};
-
-class Stack {
-    static const int SIZE = 100;
-    void* arr[SIZE];
-    int topidx;
-public:
-    Stack() : topidx(-1) {}
-    bool empty() { return topidx == -1; }
-    void push(void* x) {
-        if (topidx == SIZE - 1) {
-            cout << "Stack Overflow\n";
-            return;
-        }
-        arr[++topidx] = x;
-    }
-    void* pop() {
-        if (empty()) {
-            cout << "Stack Underflow\n";
-            return nullptr;
-        }
-        return arr[topidx--];
-    }
-    void* top() {
-        if (empty()) return nullptr;
-        return arr[topidx];
-    }
-};
-
 struct Node {
     Node *left, *right;
     int value;
     Node(int val) {
         value = val;
         left = right = nullptr;
+    }
+};
+
+class Queue {
+    static const int SIZE = 100;
+    Node* arr[SIZE];
+    int frontIdx, rear;
+public:
+    Queue() : frontIdx(0), rear(0) {}
+
+    bool empty() { return frontIdx == rear; }
+
+    void push(Node* x) {
+        if (rear == SIZE) {
+            cout << "Queue Overflow\n";
+            return;
+        }
+        arr[rear++] = x;
+    }
+
+    Node* pop() {
+        if (empty()) {
+            cout << "Queue Underflow\n";
+            return nullptr;
+        }
+        return arr[frontIdx++];
+    }
+
+    Node* front() {
+        if (empty()) {
+            cout << "Queue Empty\n";
+            return nullptr;
+        }
+        return arr[frontIdx];
+    }
+};
+
+class Stack {
+    static const int SIZE = 100;
+    Node* arr[SIZE];
+    int topidx;
+public:
+    Stack() : topidx(-1) {}
+
+    bool empty() { return topidx == -1; }
+
+    void push(Node* x) {
+        if (topidx == SIZE - 1) {
+            cout << "Stack Overflow\n";
+            return;
+        }
+        arr[++topidx] = x;
+    }
+
+    Node* pop() {
+        if (empty()) {
+            cout << "Stack Underflow\n";
+            return nullptr;
+        }
+        return arr[topidx--];
+    }
+
+    Node* top() {
+        if (empty()) return nullptr;
+        return arr[topidx];
     }
 };
 
@@ -75,7 +86,7 @@ Node* insertNode(Node* &root, int val) {
     q.push(root);
 
     while (!q.empty()) {
-        Node* curr = (Node*)q.pop();
+        Node* curr = q.pop();
 
         if (!curr->left) {
             curr->left = node;
@@ -98,7 +109,7 @@ void Update(Node *root, int oldValue, int newValue) {
     q.push(root);
 
     while (!q.empty()) {
-        Node *current = (Node*)q.pop();
+        Node *current = q.pop();
         if (current->value == oldValue) {
             current->value = newValue;
             return;
@@ -119,8 +130,7 @@ Node* deleteNode(Node* root, int val) {
     q.push(root);
 
     while (!q.empty()) {
-        Node* current = q.front();
-        q.pop();
+        Node* current = q.pop();
 
         if (current->value == val)
             target = current;
@@ -138,15 +148,16 @@ Node* deleteNode(Node* root, int val) {
         last = current;
     }
 
-    if (target) {
+    if (target && last) {
         target->value = last->value;
+
         if (parentOfLast) {
             if (parentOfLast->left == last)
                 parentOfLast->left = nullptr;
             else if (parentOfLast->right == last)
                 parentOfLast->right = nullptr;
         } else {
-            root = nullptr;
+            root = nullptr; // only one node in tree
         }
 
         delete last;
@@ -160,12 +171,13 @@ void Preorder(Node *root) {
     Stack st;
     st.push(root);
     while (!st.empty()) {
-        Node *current = (Node*)st.pop();
+        Node *current = st.pop();
         cout << current->value << " ";
         if (current->right) st.push(current->right);
         if (current->left) st.push(current->left);
     }
 }
+
 void Inorder(Node *root) {
     Stack st;
     Node *current = root;
@@ -174,7 +186,7 @@ void Inorder(Node *root) {
             st.push(current);
             current = current->left;
         }
-        current = (Node*)st.pop();
+        current = st.pop();
         cout << current->value << " ";
         current = current->right;
     }
@@ -185,13 +197,13 @@ void Postorder(Node *root) {
     Stack st1, st2;
     st1.push(root);
     while (!st1.empty()) {
-        Node* current = (Node*)st1.pop();
+        Node* current = st1.pop();
         st2.push(current);
         if (current->left) st1.push(current->left);
         if (current->right) st1.push(current->right);
     }
     while (!st2.empty()) {
-        cout << ((Node*)st2.pop())->value << " ";
+        cout << st2.pop()->value << " ";
     }
 }
 
@@ -200,12 +212,13 @@ void LevelOrder(Node* root) {
     Queue q;
     q.push(root);
     while (!q.empty()) {
-        Node* current = (Node*)q.pop();
+        Node* current = q.pop();
         cout << current->value << " ";
         if (current->left) q.push(current->left);
         if (current->right) q.push(current->right);
     }
 }
+
 int main() {
     Node *root = nullptr;
     insertNode(root, 1);
