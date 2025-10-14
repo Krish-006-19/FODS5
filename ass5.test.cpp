@@ -31,27 +31,27 @@ public:
 class Stack {
     static const int SIZE = 100;
     void* arr[SIZE];
-    int topIndex;
+    int topidx;
 public:
-    Stack() : topIndex(-1) {}
-    bool empty() { return topIndex == -1; }
+    Stack() : topidx(-1) {}
+    bool empty() { return topidx == -1; }
     void push(void* x) {
-        if (topIndex == SIZE - 1) {
+        if (topidx == SIZE - 1) {
             cout << "Stack Overflow\n";
             return;
         }
-        arr[++topIndex] = x;
+        arr[++topidx] = x;
     }
     void* pop() {
         if (empty()) {
             cout << "Stack Underflow\n";
             return nullptr;
         }
-        return arr[topIndex--];
+        return arr[topidx--];
     }
     void* top() {
         if (empty()) return nullptr;
-        return arr[topIndex];
+        return arr[topidx];
     }
 };
 
