@@ -1,11 +1,62 @@
 #include <iostream>
-#include <stack>
-#include <queue>
 using namespace std;
 
+class Queue {
+    static const int SIZE = 100;
+    void* arr[SIZE];
+    int front, rear;
+public:
+    Queue() : front(0), rear(0) {}
+    bool empty() { return front == rear; }
+    void push(void* x) {
+        if (rear == SIZE) {
+            cout << "Queue Overflow\n";
+            return;
+        }
+        arr[rear++] = x;
+    }
+    void* pop() {
+        if (empty()) {
+            cout << "Queue Underflow\n";
+            return nullptr;
+        }
+        return arr[front++];
+    }
+    void* frontElement() {
+        if (empty()) return nullptr;
+        return arr[front];
+    }
+};
+
+class Stack {
+    static const int SIZE = 100;
+    void* arr[SIZE];
+    int topIndex;
+public:
+    Stack() : topIndex(-1) {}
+    bool empty() { return topIndex == -1; }
+    void push(void* x) {
+        if (topIndex == SIZE - 1) {
+            cout << "Stack Overflow\n";
+            return;
+        }
+        arr[++topIndex] = x;
+    }
+    void* pop() {
+        if (empty()) {
+            cout << "Stack Underflow\n";
+            return nullptr;
+        }
+        return arr[topIndex--];
+    }
+    void* top() {
+        if (empty()) return nullptr;
+        return arr[topIndex];
+    }
+};
+
 struct Node {
-    Node *left;
-    Node *right;
+    Node *left, *right;
     int value;
     Node(int val) {
         value = val;
@@ -20,81 +71,67 @@ Node* insertNode(Node* &root, int val) {
         return root;
     }
 
-    queue<Node*> q;
+    Queue q;
     q.push(root);
 
     while (!q.empty()) {
-        Node* curr = q.front();
-        q.pop();
+        Node* curr = (Node*)q.pop();
 
         if (!curr->left) {
             curr->left = node;
             return root;
-        } else {
-            q.push(curr->left);
-        }
+        } else q.push(curr->left);
 
         if (!curr->right) {
             curr->right = node;
             return root;
-        } else {
-            q.push(curr->right);
-        }
+        } else q.push(curr->right);
     }
 
     return root;
 }
 
 void Update(Node *root, int oldValue, int newValue) {
-    if (!root)
-        return;
-    queue<Node *> q;
+    if (!root) return;
+
+    Queue q;
     q.push(root);
+
     while (!q.empty()) {
-        Node *current = q.front();
-        q.pop();
+        Node *current = (Node*)q.pop();
         if (current->value == oldValue) {
             current->value = newValue;
             return;
         }
-        if (current->left)
-            q.push(current->left);
-        if (current->right)
-            q.push(current->right);
+        if (current->left) q.push(current->left);
+        if (current->right) q.push(current->right);
     }
 }
 
+// ================== Delete Node ==================
 Node* deleteNode(Node* root, int val) {
     if (!root) return nullptr;
 
-    queue<Node*> q;
+    Queue q;
     q.push(root);
-    Node *target = nullptr;
-    Node *last = nullptr;
+    Node *target = nullptr, *last = nullptr;
 
     while (!q.empty()) {
-        Node *current = q.front();
-        q.pop();
-
-        if (current->value == val) {
-            target = current;
-        }
-
+        Node* current = (Node*)q.pop();
+        if (current->value == val) target = current;
         if (current->left) q.push(current->left);
         if (current->right) q.push(current->right);
-        
         last = current;
     }
 
-    if (!target) return root; 
+    if (!target) return root;
 
     target->value = last->value;
 
-    queue<Node*> tempQueue;
+    Queue tempQueue;
     tempQueue.push(root);
     while (!tempQueue.empty()) {
-        Node* current = tempQueue.front();
-        tempQueue.pop();
+        Node* current = (Node*)tempQueue.pop();
 
         if (current->left == last) {
             current->left = nullptr;
@@ -113,74 +150,64 @@ Node* deleteNode(Node* root, int val) {
     return root;
 }
 
-
+// ================== Preorder Traversal ==================
 void Preorder(Node *root) {
-    if (!root)
-        return;
-    stack<Node *> st;
+    if (!root) return;
+    Stack st;
     st.push(root);
     while (!st.empty()) {
-        Node *current = st.top();
-        st.pop();
+        Node *current = (Node*)st.pop();
         cout << current->value << " ";
-        if (current->right)
-            st.push(current->right);
-        if (current->left)
-            st.push(current->left);
+        if (current->right) st.push(current->right);
+        if (current->left) st.push(current->left);
     }
 }
 
+// ================== Inorder Traversal ==================
 void Inorder(Node *root) {
-    stack<Node *> st;
+    Stack st;
     Node *current = root;
     while (current || !st.empty()) {
         while (current) {
             st.push(current);
             current = current->left;
         }
-        current = st.top();
-        st.pop();
+        current = (Node*)st.pop();
         cout << current->value << " ";
         current = current->right;
     }
 }
 
+// ================== Postorder Traversal ==================
 void Postorder(Node *root) {
-    if (!root)
-        return;
-    stack<Node *> st1, st2;
+    if (!root) return;
+    Stack st1, st2;
     st1.push(root);
     while (!st1.empty()) {
-        Node *current = st1.top();
-        st1.pop();
+        Node* current = (Node*)st1.pop();
         st2.push(current);
-        if (current->left)
-            st1.push(current->left);
-        if (current->right)
-            st1.push(current->right);
+        if (current->left) st1.push(current->left);
+        if (current->right) st1.push(current->right);
     }
     while (!st2.empty()) {
-        cout << st2.top()->value << " ";
-        st2.pop();
+        cout << ((Node*)st2.pop())->value << " ";
     }
 }
 
+// ================== Level Order Traversal ==================
 void LevelOrder(Node* root) {
     if (!root) return;
-
-    queue<Node*> q;
+    Queue q;
     q.push(root);
-
     while (!q.empty()) {
-        Node* current = q.front();
-        q.pop();
+        Node* current = (Node*)q.pop();
         cout << current->value << " ";
-
         if (current->left) q.push(current->left);
         if (current->right) q.push(current->right);
     }
 }
 
+// ================== MAIN ==================
 int main() {
     Node *root = nullptr;
     insertNode(root, 1);
@@ -200,16 +227,14 @@ int main() {
     cout << "\nPostorder: ";
     Postorder(root);
 
-    cout << "\nlevelOrder: ";
+    cout << "\nLevelOrder: ";
     LevelOrder(root);
 
-    cout << "\n\n";
-
+    cout << "\n\nAfter Update (4→8): ";
     Update(root, 4, 8);
     Inorder(root);
 
-    cout << "\n\n";
-
+    cout << "\nAfter Delete (7): ";
     deleteNode(root, 7);
     Inorder(root);
 
