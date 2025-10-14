@@ -111,41 +111,47 @@ void Update(Node *root, int oldValue, int newValue) {
 Node* deleteNode(Node* root, int val) {
     if (!root) return nullptr;
 
+    Node* target = nullptr;
+    Node* last = nullptr;
+    Node* parentOfLast = nullptr;
+
     Queue q;
     q.push(root);
-    Node *target = nullptr, *last = nullptr;
 
     while (!q.empty()) {
-        Node* current = (Node*)q.pop();
-        if (current->value == val) target = current;
-        if (current->left) q.push(current->left);
-        if (current->right) q.push(current->right);
+        Node* current = q.front();
+        q.pop();
+
+        if (current->value == val)
+            target = current;
+
+        if (current->left) {
+            parentOfLast = current;
+            q.push(current->left);
+        }
+
+        if (current->right) {
+            parentOfLast = current;
+            q.push(current->right);
+        }
+
         last = current;
     }
 
-    if (!target) return root;
-
-    target->value = last->value;
-
-    Queue tempQueue;
-    tempQueue.push(root);
-    while (!tempQueue.empty()) {
-        Node* current = (Node*)tempQueue.pop();
-
-        if (current->left == last) {
-            current->left = nullptr;
-            break;
-        }
-        if (current->right == last) {
-            current->right = nullptr;
-            break;
+    if (target) {
+        target->value = last->value;
+        if (parentOfLast) {
+            if (parentOfLast->left == last)
+                parentOfLast->left = nullptr;
+            else if (parentOfLast->right == last)
+                parentOfLast->right = nullptr;
+        } else {
+            root = nullptr;
         }
 
-        if (current->left) tempQueue.push(current->left);
-        if (current->right) tempQueue.push(current->right);
+        delete last;
     }
 
-    delete last;
     return root;
 }
 
