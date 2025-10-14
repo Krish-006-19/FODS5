@@ -144,7 +144,6 @@ Node* deleteNode(Node* root, int val) {
             parentOfLast = current;
             q.push(current->right);
         }
-
         last = current;
     }
 
@@ -159,10 +158,8 @@ Node* deleteNode(Node* root, int val) {
         } else {
             root = nullptr; 
         }
-
         delete last;
     }
-
     return root;
 }
 
@@ -220,34 +217,76 @@ void LevelOrder(Node* root) {
 }
 
 int main() {
-    Node *root = nullptr;
-    insertNode(root, 1);
-    insertNode(root, 2);
-    insertNode(root, 3);
-    insertNode(root, 4);
-    insertNode(root, 5);
-    insertNode(root, 6);
-    insertNode(root, 7);
+    Node* root = nullptr;
+    int choice, val, newVal;
 
-    cout << "Preorder: ";
-    Preorder(root);
+    do {
+        cout << "\n\n==== Binary Tree Menu ====\n";
+        cout << "1. Insert Node\n";
+        cout << "2. Delete Node\n";
+        cout << "3. Update Node\n";
+        cout << "4. Preorder Traversal\n";
+        cout << "5. Inorder Traversal\n";
+        cout << "6. Postorder Traversal\n";
+        cout << "7. Level Order Traversal\n";
+        cout << "8. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
 
-    cout << "\nInorder: ";
-    Inorder(root);
+        switch (choice) {
+            case 1:
+                cout << "Enter value to insert: ";
+                cin >> val;
+                insertNode(root, val);
+                break;
 
-    cout << "\nPostorder: ";
-    Postorder(root);
+            case 2:
+                cout << "Enter value to delete: ";
+                cin >> val;
+                root = deleteNode(root, val);
+                break;
 
-    cout << "\nLevelOrder: ";
-    LevelOrder(root);
+            case 3:
+                cout << "Enter old value to update: ";
+                cin >> val;
+                cout << "Enter new value: ";
+                cin >> newVal;
+                Update(root, val, newVal);
+                break;
 
-    cout << "\n\nAfter Update (4→8): ";
-    Update(root, 4, 8);
-    Inorder(root);
+            case 4:
+                cout << "Preorder Traversal: ";
+                Preorder(root);
+                cout << endl;
+                break;
 
-    cout << "\nAfter Delete (7): ";
-    deleteNode(root, 7);
-    Inorder(root);
+            case 5:
+                cout << "Inorder Traversal: ";
+                Inorder(root);
+                cout << endl;
+                break;
+
+            case 6:
+                cout << "Postorder Traversal: ";
+                Postorder(root);
+                cout << endl;
+                break;
+
+            case 7:
+                cout << "Level Order Traversal: ";
+                LevelOrder(root);
+                cout << endl;
+                break;
+
+            case 8:
+                cout << "Exiting program...\n";
+                break;
+
+            default:
+                cout << "Invalid choice. Please try again.\n";
+        }
+
+    } while (choice != 8);
 
     return 0;
 }
