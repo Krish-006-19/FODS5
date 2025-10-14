@@ -226,10 +226,9 @@ bool isValidInteger(const string& str) {
     if (str[0] == '+' || str[0] == '-')
         start = 1;
 
-    if (start == 1 && str.size() == 1)
-        return false;
+    if (start == str.size()) return false;
 
-    for (size_t i = start; i < str.size(); i++) {
+    for (int i = start; i < str.size(); i++) {
         if (!isdigit(str[i]))
             return false;
     }
@@ -238,30 +237,33 @@ bool isValidInteger(const string& str) {
 
 int getValidInteger(const string& prompt) {
     string input;
+    int val;
+
     while (true) {
         cout << prompt;
         cin >> input;
 
-        if (isValidInteger(input)) {
-            try {
-                int val = stoi(input);
-                return val;
-            } catch (...) {
-                cout << "Number out of range. Try again.\n";
-            }
-        } else {
-            cout << "Invalid input. Please enter a valid integer.\n";
+        if (!isValidInteger(input)) {
+            cout << "invalid input. Please enter a valid integer.\n";
+            continue;
         }
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+        try {
+            val = stoi(input);
+            return val;
+        } catch (const out_of_range&) {
+            cout << "Number out of range. Try again.\n";
+        } catch (...) {
+            cout << "Unexpected error. Try again.\n";
+        }
     }
 }
 
 int main() {
     Node* root = nullptr;
-    int choice, val, newVal;
-
-    do {
+    string choice;
+    int val, newVal;
+    while(true) {
         cout << "\n\n==== Binary Tree Menu ====\n";
         cout << "1. Insert Node\n";
         cout << "2. Delete Node\n";
@@ -273,49 +275,55 @@ int main() {
         cout << "8. Exit\n";
         cout << "choose a num: ";
         cin >> choice;
+        if (choice.size() != 1 || choice[0] < '1' || choice[0] > '8') {
+            cout << "Invalid choice. Please enter a number between 1–8.\n";
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            continue;
+        }
 
-        switch (choice) {
-            case 1:
+        switch (choice[0]) {
+            case '1':
                 val = getValidInteger("Enter value to insert: ");
                 insertNode(root, val);
                 break;
             
-            case 2:
+            case '2':
                 val = getValidInteger("Enter value to delete: ");
                 root = deleteNode(root, val);
                 break;
             
-            case 3:
+            case '3':
                 val = getValidInteger("Enter old value to update: ");
                 newVal = getValidInteger("Enter new value: ");
                 Update(root, val, newVal);
                 break;
 
-            case 4:
+            case '4':
                 cout << "Preorder Traversal: ";
                 Preorder(root);
                 cout << endl;
                 break;
 
-            case 5:
+            case '5':
                 cout << "Inorder Traversal: ";
                 Inorder(root);
                 cout << endl;
                 break;
 
-            case 6:
+            case '6':
                 cout << "Postorder Traversal: ";
                 Postorder(root);
                 cout << endl;
                 break;
 
-            case 7:
+            case '7':
                 cout << "Level Order Traversal: ";
                 LevelOrder(root);
                 cout << endl;
                 break;
 
-            case 8:
+            case '8':
                 cout << "Exiting program...\n";
                 break;
 
@@ -323,7 +331,7 @@ int main() {
                 cout << "Invalid choice. Please try again.\n";
         }
 
-    } while (choice != 8);
+    }
 
     return 0;
 }
