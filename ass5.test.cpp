@@ -108,7 +108,6 @@ void Update(Node *root, int oldValue, int newValue) {
     }
 }
 
-// ================== Delete Node ==================
 Node* deleteNode(Node* root, int val) {
     if (!root) return nullptr;
 
@@ -150,7 +149,6 @@ Node* deleteNode(Node* root, int val) {
     return root;
 }
 
-// ================== Preorder Traversal ==================
 void Preorder(Node *root) {
     if (!root) return;
     Stack st;
@@ -162,8 +160,6 @@ void Preorder(Node *root) {
         if (current->left) st.push(current->left);
     }
 }
-
-// ================== Inorder Traversal ==================
 void Inorder(Node *root) {
     Stack st;
     Node *current = root;
@@ -178,7 +174,6 @@ void Inorder(Node *root) {
     }
 }
 
-// ================== Postorder Traversal ==================
 void Postorder(Node *root) {
     if (!root) return;
     Stack st1, st2;
@@ -194,7 +189,6 @@ void Postorder(Node *root) {
     }
 }
 
-// ================== Level Order Traversal ==================
 void LevelOrder(Node* root) {
     if (!root) return;
     Queue q;
@@ -206,8 +200,6 @@ void LevelOrder(Node* root) {
         if (current->right) q.push(current->right);
     }
 }
-
-// ================== MAIN ==================
 int main() {
     Node *root = nullptr;
     insertNode(root, 1);
