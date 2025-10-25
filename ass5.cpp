@@ -37,14 +37,6 @@ public:
         }
         return arr[frontIdx++];
     }
-
-    Node* front() {
-        if (empty()) {
-            cout << "Queue Empty\n";
-            return nullptr;
-        }
-        return arr[frontIdx];
-    }
 };
 
 class Stack {
@@ -70,11 +62,6 @@ public:
             return nullptr;
         }
         return arr[topidx--];
-    }
-
-    Node* top() {
-        if (empty()) return nullptr;
-        return arr[topidx];
     }
 };
 
